@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Siddhesh Khiratkar — Portfolio</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='%23ffffff' font-family='sans-serif'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="light"]{
+    --bg:#ffffff; --fg:#0a0a0a; --muted:#6b6b6b; --faint:#a3a3a3;
+    --line:#e0e0e0; --line-strong:#0a0a0a; --surface:#f4f4f2;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0a0a0a; --fg:#f5f5f2; --muted:#9a9a94; --faint:#5f5f5a;
+    --line:#262624; --line-strong:#f5f5f2; --surface:#141412;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0a0a0a; --fg:#f5f5f2; --muted:#9a9a94; --faint:#5f5f5a;
+      --line:#262624; --line-strong:#f5f5f2; --surface:#141412;
+    }
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  :root{
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html{
+    background:var(--bg);
+    scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 1.5rem);
+  }
+  @media (prefers-reduced-motion: no-preference){
+    html{ scroll-behavior:smooth; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+  body{
+    background:var(--bg); color:var(--fg);
+    font-family:'Space Mono', ui-monospace, monospace;
+    font-size:15px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    cursor:default;
+    overflow-x:hidden;
+    max-width:100%;
+  }
+  a{color:var(--fg);}
+  .grot{ font-family:'Space Grotesk', ui-sans-serif, sans-serif; }
+
+  :focus-visible{
+    outline:2px solid var(--fg); outline-offset:3px; border-radius:1px;
+  }
+
+  .status-badge{
+    display:inline-flex; align-items:center; gap:0.5rem;
+    font-size:0.72rem; color:var(--muted); margin-bottom:1.1rem;
+  }
+  .status-badge .dot{
+    width:6px; height:6px; border-radius:50%; background:#2ea043;
+    box-shadow:0 0 0 3px color-mix(in srgb, #2ea043 25%, transparent);
+  }
+
+  /* ---------- fun custom cursor (desktop only) ---------- */
+  #cursor{
+    position:fixed; top:0; left:0; width:22px; height:22px;
+    border-radius:50%; background:var(--fg); pointer-events:none;
+    mix-blend-mode:difference; z-index:999;
+    transform:translate(-50%,-50%);
+    transition:width .18s ease, height .18s ease, opacity .18s ease;
+    opacity:0;
+  }
+  @media (hover:hover) and (pointer:fine){
+    #cursor{ opacity:1; }
+  }
+  #cursor.grow{ width:52px; height:52px; }
+
+  /* ---------- layout ---------- */
+  .page{
+    max-width:1080px; margin:0 auto;
+    display:grid; grid-template-columns:260px 1fr;
+    gap:0 5rem;
+    padding:4.5rem 2rem 5rem;
+  }
+
+  .sidebar{ position:sticky; top:3.5rem; align-self:start; max-height:calc(100vh - 5rem); overflow-y:auto; }
+
+  .sig{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:2.05rem; line-height:1.1;
+    letter-spacing:-0.02em; margin-bottom:0.6rem;
+    display:inline-block;
+  }
+  .role{ font-size:0.8rem; color:var(--muted); margin-bottom:1.6rem; }
+
+  .clock{
+    font-size:0.72rem; color:var(--faint); margin-bottom:1.8rem;
+    display:flex; align-items:center; gap:0.4rem;
+  }
+  .clock .dot{
+    width:6px; height:6px; border-radius:50%; background:var(--fg);
+    animation:blink 1.6s infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.15;} }
+
+  .side-block{ margin-bottom:1.8rem; }
+  .side-label{
+    font-size:0.64rem; text-transform:uppercase; letter-spacing:0.14em;
+    color:var(--faint); margin-bottom:0.6rem;
+  }
+  .side-line{ font-size:0.82rem; margin-bottom:0.35rem; }
+  .side-line a{
+    text-decoration:none; border-bottom:1px solid var(--line);
+    padding-bottom:1px; transition:border-color .15s, padding-left .15s;
+    display:inline-block;
+  }
+  .side-line a:hover{ border-color:var(--fg); padding-left:4px; }
+
+  /* nav */
+  .navlist{ list-style:none; display:flex; flex-direction:column; gap:0.5rem; }
+  .navlist a{
+    text-decoration:none; font-size:0.82rem; color:var(--muted);
+    display:flex; align-items:center; gap:0.55rem;
+    transition:color .15s, padding-left .15s;
+  }
+  .navlist a::before{
+    content:"·"; color:var(--faint); font-size:1.1rem; line-height:0;
+    transition:color .15s;
+  }
+  .navlist a:hover, .navlist a.active{ color:var(--fg); padding-left:3px; }
+  .navlist a:hover::before, .navlist a.active::before{ color:var(--fg); }
+
+  .theme-btn, .action-btn{
+    background:none; border:1px solid var(--line); color:var(--muted);
+    font-family:'Space Mono', monospace; font-size:0.7rem; letter-spacing:0.04em;
+    padding:0.45rem 0.75rem; cursor:pointer; margin-top:0.4rem;
+    transition:background .15s, color .15s, border-color .15s;
+    display:inline-block; text-decoration:none;
+  }
+  .theme-btn:hover, .action-btn:hover{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+  .btn-row{ display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.6rem; }
+
+  /* ---------- main ---------- */
+  main{ min-width:0; }
+
+  .reveal{
+    opacity:0; transform:translateY(14px);
+    transition:opacity .55s ease, transform .55s ease;
+  }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  section{ margin-bottom:3.6rem; scroll-margin-top:2rem; }
+  section:last-child{ margin-bottom:0; }
+
+  .h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size:1.5rem;
+    letter-spacing:-0.01em; margin-bottom:1.3rem;
+    display:flex; align-items:baseline; gap:0.7rem;
+  }
+  .h2 small{
+    font-family:'Space Mono', monospace;
+    font-weight:400; font-size:0.66rem; color:var(--faint);
+    letter-spacing:0.1em; text-transform:uppercase;
+  }
+
+  .lede{ font-size:0.98rem; max-width:56ch; }
+
+  /* skills - clickable chips */
+  .skills{ display:flex; flex-wrap:wrap; gap:0.55rem; }
+  .chip{
+    border:1px solid var(--line); padding:0.45rem 0.85rem;
+    font-size:0.8rem; cursor:pointer; user-select:none;
+    transition:background .15s, color .15s, transform .15s, border-color .15s;
+  }
+  .chip:hover{ border-color:var(--fg); transform:translateY(-2px); }
+  .chip.on{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+
+  /* projects - invert on hover */
+  .project{
+    padding:1.9rem 1.4rem; border-top:1px solid var(--line);
+    transition:background .2s ease, color .2s ease, padding-left .2s ease;
+    margin:0 -1.4rem;
+  }
+  .project:last-child{ border-bottom:1px solid var(--line); }
+  .project:hover{
+    background:var(--fg); color:var(--bg);
+    padding-left:1.9rem;
+  }
+  .project:hover .project-stack,
+  .project:hover .desc,
+  .project:hover .idx,
+  .project:hover a{ color:var(--bg); opacity:0.75; }
+
+  .project-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    flex-wrap:wrap; gap:0.3rem 1rem; margin-bottom:0.7rem;
+  }
+  .project-title-row{ display:flex; align-items:baseline; gap:0.65rem; }
+  .idx{ font-size:0.75rem; color:var(--faint); transition:color .2s; }
+  .project-title{
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.12rem;
+  }
+  .project-title a{ text-decoration:none; border-bottom:1px solid transparent; }
+  .project-title a:hover{ border-bottom-color:currentColor; }
+  .project-stack{
+    font-size:0.7rem; color:var(--muted); text-transform:uppercase;
+    letter-spacing:0.08em; transition:color .2s, opacity .2s;
+  }
+  .project p.desc{ font-size:0.87rem; color:var(--muted); margin-bottom:0.7rem; max-width:58ch; transition:color .2s, opacity .2s; }
+  .project ul{ padding-left:1.05rem; font-size:0.87rem; display:flex; flex-direction:column; gap:0.4rem; }
+
+  /* education / certs / leadership */
+  .entry{ margin-bottom:1.2rem; }
+  .entry:last-child{ margin-bottom:0; }
+  .entry-title{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:0.98rem; }
+  .entry-sub{ font-size:0.8rem; color:var(--muted); margin-top:0.2rem; }
+
+  .cert-list, .lead-list{ list-style:none; display:flex; flex-direction:column; gap:0.55rem; margin-top:0.9rem; }
+  .cert-list li, .lead-list li{
+    font-size:0.86rem; padding-left:1rem; position:relative;
+  }
+  .cert-list li::before, .lead-list li::before{
+    content:"—"; position:absolute; left:0; color:var(--faint);
+  }
+
+  /* contact */
+  .contact-box{
+    border:1px solid var(--line); padding:2.2rem;
+    display:flex; flex-direction:column; gap:1.1rem;
+  }
+  .contact-row{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.8rem; }
+  .contact-links{ display:flex; gap:0.6rem; flex-wrap:wrap; }
+  .copy-msg{ font-size:0.72rem; color:var(--faint); min-height:1em; }
+
+  footer{
+    max-width:1080px; margin:0 auto; padding:2rem 2rem 3rem;
+    font-size:0.72rem; color:var(--faint);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;
+    border-top:1px solid var(--line); margin-top:1rem;
+  }
+  footer a{ color:var(--faint); text-decoration:none; }
+  footer a:hover{ color:var(--fg); }
+
+  @media (max-width:760px){
+    .page{ grid-template-columns:1fr; gap:3rem 0; padding:2.5rem 1.3rem 3.5rem; }
+    .sidebar{ position:static; max-height:none; }
+    .sig{ font-size:1.7rem; }
+    .project{ margin:0; padding:1.6rem 0.9rem; }
+    .project:hover{ padding-left:1.1rem; }
+    #cursor{ display:none; }
+  }
+
+  /* ---------- print / resume mode ---------- */
+  @media print{
+    #cursor, .theme-btn, .btn-row, .navlist, .side-block:has(.navlist), .clock{ display:none !important; }
+    html, body{ background:#fff !important; color:#000 !important; font-size:11px; }
+    .page{ display:block; max-width:100%; padding:0; }
+    .sidebar{ position:static; margin-bottom:1.5rem; }
+    .project:hover{ background:none !important; color:#000 !important; padding-left:1.4rem !important; }
+    .project{ break-inside:avoid; }
+    section{ margin-bottom:1.4rem; }
+    a{ color:#000 !important; }
+    .chip{ border-color:#000; }
+    .contact-box{ border-color:#000; }
+  }
+</style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <div class="page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sig" id="sig" data-text="Siddhesh Khiratkar">Siddhesh Khiratkar</div>
+      <div class="role">IT Engineering Student<br>Linux · Networking · Bash</div>
+      <div class="clock"><span class="dot"></span><span id="clockText">Pune, IST —:—:—</span></div>
+
+      <div class="side-block">
+        <div class="side-label">Navigate</div>
+        <ul class="navlist" id="navlist">
+          <li><a href="#summary">Summary</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#education">Education</a></li>
+          <li><a href="#certifications">Certifications</a></li>
+          <li><a href="#leadership">Leadership</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="side-block">
+        <div class="side-label">Contact</div>
+        <div class="side-line"><a href="mailto:siddheshkhiratkar@gmail.com" data-magnetic>siddheshkhiratkar@gmail.com</a></div>
+        <div class="side-line"><a href="tel:+918668337731" data-magnetic>+91 86683 37731</a></div>
+      </div>
+
+      <div class="side-block">
+        <div class="side-label">Elsewhere</div>
+        <div class="side-line"><a href="https://github.com/Nexaryn" target="_blank" rel="noopener noreferrer" data-magnetic>GitHub / Nexaryn</a></div>
+        <div class="side-line"><a href="https://linkedin.com/in/siddhesh-khiratkar" target="_blank" rel="noopener noreferrer" data-magnetic>LinkedIn</a></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="theme-btn" id="themeBtn" aria-label="Toggle color theme" aria-pressed="false" onclick="toggleTheme()">dark mode</button>
+        <button class="action-btn" onclick="window.print()">↓ resume (pdf)</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main>
+      <section class="reveal" id="summary">
+        <div class="h2">Summary</div>
+        <p class="lede">IT Engineering student with hands-on experience in Linux administration, TCP/IP networking, and Bash automation. Builds original command-line security and networking tools rather than following tutorials — comfortable across Debian, Ubuntu, Arch, and RHEL-based systems. Looking for an internship in Linux administration, IT support, or networking.</p>
+      </section>
+
+      <section class="reveal" id="skills">
+        <div class="h2">Skills <small>click to pin favourites</small></div>
+        <div class="skills" id="skillChips">
+          <div class="chip">Bash</div>
+          <div class="chip">Python</div>
+          <div class="chip">SQL</div>
+          <div class="chip">Linux</div>
+          <div class="chip">TCP/IP</div>
+          <div class="chip">Port scanning</div>
+          <div class="chip">UFW</div>
+          <div class="chip">firewalld</div>
+          <div class="chip">iptables</div>
+          <div class="chip">Git</div>
+          <div class="chip">GitHub</div>
+          <div class="chip">ShellCheck</div>
+        </div>
+      </section>
+
+      <section class="reveal" id="projects">
+        <div class="h2">Projects <small>hover to inspect</small></div>
+
+        <div class="project">
+          <div class="project-head">
+            <div class="project-title-row">
+              <span class="idx">01</span>
+              <div class="project-title"><a href="https://github.com/Nexaryn/Shell-Warden" target="_blank" rel="noopener noreferrer">Shell-Warden</a></div>
+            </div>
+            <div class="project-stack">Bash</div>
+          </div>
+          <p class="desc">A cross-distro Linux security auditor.</p>
+          <ul>
+            <li>Runs 10 checks across SSH hardening, firewall status, file permissions, and user account security</li>
+            <li>Auto-detects the system's active firewall backend instead of hardcoding for one distro</li>
+            <li>Weighted risk-scoring system (Critical / High / Medium / Low) so results reflect actual severity, not just a pass/fail count</li>
+            <li>Every run saves a timestamped audit log; modular check system lets new checks be added as drop-in scripts with no wiring required</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            <div class="project-title-row">
+              <span class="idx">02</span>
+              <div class="project-title"><a href="https://github.com/Nexaryn/Port-Scout" target="_blank" rel="noopener noreferrer">Port-Scout</a></div>
+            </div>
+            <div class="project-stack">Bash</div>
+          </div>
+          <p class="desc">A dependency-free TCP port scanner.</p>
+          <ul>
+            <li>Built on Bash's built-in <code>/dev/tcp</code> — no nmap or netcat required</li>
+            <li>Timeout-safe TCP connect checks across custom port ranges or a curated list of ~24 common service ports</li>
+            <li>Maps open ports to likely running services (SSH, HTTP, MySQL, RDP, etc.) and logs every scan with a timestamp</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            <div class="project-title-row">
+              <span class="idx">03</span>
+              <div class="project-title"><a href="https://github.com/Nexaryn/Veritas" target="_blank" rel="noopener noreferrer">Veritas</a></div>
+            </div>
+            <div class="project-stack">JavaScript</div>
+          </div>
+          <p class="desc">A web-based application for verifying news article authenticity.</p>
+          <ul>
+            <li>Flags signals commonly associated with unreliable reporting to help readers assess credibility</li>
+            <li>Built and shipped as a standalone web app, independent of the Bash tooling above</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="reveal" id="education">
+        <div class="h2">Education</div>
+        <div class="entry">
+          <div class="entry-title">Bachelor of Technology, Information Technology</div>
+          <div class="entry-sub">AISSMS Institute of Information Technology, Pune — 2024 to 2028</div>
+        </div>
+      </section>
+
+      <section class="reveal" id="certifications">
+        <div class="h2">Certifications</div>
+        <ul class="cert-list">
+          <li>Programming for Everybody (Getting Started with Python) — University of Michigan, Coursera, Aug 2024</li>
+          <li>LFS101: Introduction to Linux — The Linux Foundation, Aug 2026</li>
+          <li>Python — freeCodeCamp, Aug 2026</li>
+        </ul>
+      </section>
+
+      <section class="reveal" id="leadership">
+        <div class="h2">Leadership &amp; Volunteering</div>
+        <div class="entry">
+          <div class="entry-title">Volunteer Educator, Robin Hood Army</div>
+          <div class="entry-sub">Pune, Maharashtra — Feb 2026 to Present</div>
+        </div>
+        <ul class="lead-list">
+          <li>Teach foundational subjects to underprivileged children as part of a weekly volunteer program</li>
+          <li>Develop communication, patience, and mentoring skills by breaking down concepts for young learners with varied learning paces</li>
+          <li>Manage weekly surplus food collection and distribution drives to support the local community</li>
+        </ul>
+      </section>
+
+      <section class="reveal" id="contact">
+        <div class="h2">Contact</div>
+        <div class="contact-box">
+          <p class="lede" style="margin-bottom:0;">Open to internships in Linux administration, networking, or IT support. Reach out directly — I reply fast.</p>
+          <div class="contact-row">
+            <div class="contact-links">
+              <button class="action-btn" onclick="copyEmail()">copy email</button>
+              <a class="action-btn" href="mailto:siddheshkhiratkar@gmail.com">write an email</a>
+              <a class="action-btn" href="https://linkedin.com/in/siddhesh-khiratkar" target="_blank" rel="noopener noreferrer">linkedin</a>
+              <a class="action-btn" href="https://github.com/Nexaryn" target="_blank" rel="noopener noreferrer">github</a>
+            </div>
+            <span class="copy-msg" id="copyMsg"></span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <span>Siddhesh Khiratkar</span>
+    <span id="footerNote">Pune, India — 2026</span>
+    <a href="#summary">↑ back to top</a>
+  </footer>
+
+  <script>
+
+    function applyLabel(theme){
+      var btn = document.getElementById('themeBtn');
+      btn.textContent = theme === 'dark' ? 'light mode' : 'dark mode';
+      btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    }
+    function toggleTheme(){
+      var root = document.documentElement;
+      var current = root.getAttribute('data-theme') || 'light';
+      var next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      applyLabel(next);
+      try{ localStorage.setItem('portfolio_theme', next); }catch(e){}
+    }
+    (function initTheme(){
+      try{
+        var saved = localStorage.getItem('portfolio_theme');
+        if(saved === 'light' || saved === 'dark'){
+          document.documentElement.setAttribute('data-theme', saved);
+          applyLabel(saved);
+        } else { applyLabel('light'); }
+      }catch(e){ applyLabel('light'); }
+    })();
+
+    var cursor = document.getElementById('cursor');
+    var hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if(hasFinePointer){
+      document.addEventListener('mousemove', function(e){
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        cursor.style.opacity = '1';
+      });
+      document.documentElement.addEventListener('mouseleave', function(){
+        cursor.style.opacity = '0';
+      });
+      document.querySelectorAll('a, button, .chip, .project').forEach(function(el){
+        el.addEventListener('mouseenter', function(){ cursor.classList.add('grow'); });
+        el.addEventListener('mouseleave', function(){ cursor.classList.remove('grow'); });
+      });
+    }
+
+    var sig = document.getElementById('sig');
+    var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var original = sig.getAttribute('data-text');
+    var scrambling = false;
+
+    function scramble(){
+      if(scrambling) return;
+      scrambling = true;
+      var frame = 0;
+      var totalFrames = 14;
+      var interval = setInterval(function(){
+        var out = '';
+        for(var i=0; i<original.length; i++){
+          var ch = original[i];
+          if(ch === ' '){ out += ' '; continue; }
+          var revealPoint = (i / original.length) * totalFrames;
+          if(frame >= revealPoint + 4){
+            out += ch;
+          } else {
+            out += CHARS[Math.floor(Math.random()*CHARS.length)];
+          }
+        }
+        sig.textContent = out;
+        frame++;
+        if(frame > totalFrames + 4){
+          clearInterval(interval);
+          sig.textContent = original;
+          scrambling = false;
+        }
+      }, 35);
+    }
+    sig.addEventListener('mouseenter', scramble);
+    window.addEventListener('load', function(){ setTimeout(scramble, 300); });
+
+    document.querySelectorAll('[data-magnetic]').forEach(function(el){
+      el.addEventListener('mousemove', function(e){
+        var r = el.getBoundingClientRect();
+        var x = (e.clientX - r.left - r.width/2) * 0.25;
+        var y = (e.clientY - r.top - r.height/2) * 0.25;
+        el.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      });
+      el.addEventListener('mouseleave', function(){
+        el.style.transform = 'translate(0,0)';
+        el.style.transition = 'transform .25s ease';
+        setTimeout(function(){ el.style.transition = ''; }, 250);
+      });
+    });
+
+    document.querySelectorAll('.chip').forEach(function(chip){
+      chip.addEventListener('click', function(){
+        chip.classList.toggle('on');
+      });
+    });
+
+    function copyEmail(){
+      var email = 'siddheshkhiratkar@gmail.com';
+      var msg = document.getElementById('copyMsg');
+      function show(text){
+        msg.textContent = text;
+        setTimeout(function(){ msg.textContent = ''; }, 2000);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(email).then(function(){
+          show('copied to clipboard');
+        }).catch(function(){
+          show(email);
+        });
+      } else {
+        show(email);
+      }
+    }
+
+    var revealEls = document.querySelectorAll('.reveal');
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      revealEls.forEach(function(el){ io.observe(el); });
+    } else {
+      revealEls.forEach(function(el){ el.classList.add('is-visible'); });
+    }
+
+    /* ---------- active nav highlight ---------- */
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('#navlist a'));
+    var sections = navLinks.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+    if('IntersectionObserver' in window && sections.length){
+      var navIo = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          var id = '#' + entry.target.id;
+          var link = navLinks.find(function(a){ return a.getAttribute('href') === id; });
+          if(!link) return;
+          if(entry.isIntersecting){
+            navLinks.forEach(function(a){ a.classList.remove('active'); });
+            link.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+      sections.forEach(function(s){ navIo.observe(s); });
+    }
+
+    var clockTimer = null;
+    function updateClock(){
+      if(document.hidden) return;
+      var now = new Date();
+      var istString = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata', hour12: false });
+      document.getElementById('clockText').textContent = 'Pune, IST ' + istString;
+    }
+    function startClock(){
+      updateClock();
+      if(!clockTimer) clockTimer = setInterval(updateClock, 1000);
+    }
+    function stopClock(){
+      clearInterval(clockTimer);
+      clockTimer = null;
+    }
+    document.addEventListener('visibilitychange', function(){
+      if(document.hidden){ stopClock(); } else { startClock(); }
+    });
+    startClock();
+  </script>
+</body>
+</html>
